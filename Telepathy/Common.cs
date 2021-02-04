@@ -1,4 +1,11 @@
-﻿﻿// common code used by server and client
+﻿// common code used by server and client
+using System;
+using System.Collections.Concurrent;
+using System.Net.Sockets;
+using System.Threading;
+using System.IO;
+using System.Net.Security;
+
 namespace Telepathy
 {
     public abstract class Common

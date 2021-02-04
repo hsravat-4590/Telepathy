@@ -1,6 +1,11 @@
-﻿﻿using System;
+﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Threading;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Telepathy
 {
@@ -14,6 +19,13 @@ namespace Telepathy
     //    data races here!
     class ClientState : ConnectionState
     {
+        public TcpClient client;
+        volatile bool _Encrypted;
+        public bool Encrypted => _Encrypted;
+        volatile bool _AcceptSelfSignedCert;
+        public bool AcceptSelfSignedCert => _AcceptSelfSignedCert;
+        Thread receiveThread;
+        Thread sendThread;
         public Thread receiveThread;
 
         // TcpClient.Connected doesn't check if socket != null, which
@@ -104,6 +116,40 @@ namespace Telepathy
             try
             {
                 // connect (blocking)
+                client.Connect(ip, port);
+
+                Stream stream = client.GetStream();
+                
+                if (_Encrypted)
+                {
+                    RemoteCertificateValidationCallback trustCert = (object sender, X509Certificate x509Certificate,
+                        X509Chain x509Chain, SslPolicyErrors policyErrors) =>
+                    {
+                        if (_AcceptSelfSignedCert)
+                        {
+                            // All certificates are accepted
+                            return true;
+                        }
+                        else
+                        {
+                            if (policyErrors == SslPolicyErrors.None)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    };
+
+                    SslStream encryptedStream = new SslStream(client.GetStream(), false, trustCert, null);
+                    stream = encryptedStream;
+
+                    encryptedStream.AuthenticateAsClient(ip);
+                }
+
+                _Connecting = false;
                 state.client.Connect(ip, port);
                 state.Connecting = false; // volatile!
 
@@ -171,12 +217,20 @@ namespace Telepathy
 
         public void Connect(string ip, int port)
         {
+            Connect(ip, port, false, false);
+        }
+
+        public void Connect(string ip, int port, bool encrypt, bool acceptSelfSignedCert)
+        {
             // not if already started
             if (Connecting || Connected)
             {
                 Log.Warning("Telepathy Client can not create connection because an existing connection is connecting or connected");
                 return;
             }
+
+            _Encrypted = encrypt;
+            _AcceptSelfSignedCert = acceptSelfSignedCert;
 
             // overwrite old thread's state object. create a new one to avoid
             // data races where an old dieing thread might still modify the

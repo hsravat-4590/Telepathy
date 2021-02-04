@@ -10,7 +10,7 @@ namespace Telepathy
         //
         // let's add a ReadSafely method that returns '0' in both cases so we don't
         // have to worry about exceptions, since a disconnect is a disconnect...
-        public static int ReadSafely(this NetworkStream stream, byte[] buffer, int offset, int size)
+        public static int ReadSafely(this Stream stream, byte[] buffer, int offset, int size)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Telepathy
         //    'n' bytes
         // -> this is blocking until 'n' bytes were received
         // -> immediately returns false in case of disconnects
-        public static bool ReadExactly(this NetworkStream stream, byte[] buffer, int amount)
+        public static bool ReadExactly(this Stream stream, byte[] buffer, int amount)
         {
             // there might not be enough bytes in the TCP buffer for .Read to read
             // the whole amount at once, so we need to keep trying until we have all
