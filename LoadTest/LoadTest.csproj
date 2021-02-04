@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFrameworks>net471</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Telepathy\Telepathy.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Telepathy\Telepathy.csproj" />
+    </ItemGroup>
+
 </Project>

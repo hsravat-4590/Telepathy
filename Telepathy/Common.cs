@@ -1,4 +1,4 @@
-﻿// common code used by server and client
+﻿﻿// common code used by server and client
 namespace Telepathy
 {
     public abstract class Common

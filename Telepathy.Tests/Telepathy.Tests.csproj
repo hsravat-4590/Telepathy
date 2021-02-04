@@ -1,18 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net471</TargetFrameworks>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="nunit" Version="3.12.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.11.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.12.0" />
-    <PackageReference Include="OpenCover" Version="4.7.906-rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Telepathy\Telepathy.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Telepathy\Telepathy.csproj" />
+    </ItemGroup>
+
 </Project>
